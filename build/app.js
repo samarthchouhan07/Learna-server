@@ -29,6 +29,12 @@ const limiter = (0, express_rate_limit_1.rateLimit)({
     standardHeaders: 'draft-7',
     legacyHeaders: false,
 });
+exports.app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Welcome to the API",
+    });
+});
 exports.app.use("/api/v1", user_route_1.default, course_route_1.default, order_route_1.default, notification_route_1.default, analytics_route_1.default, layout_route_1.default);
 exports.app.get("/test", (req, res, next) => {
     res.status(200).json({
