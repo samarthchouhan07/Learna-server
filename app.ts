@@ -2,6 +2,7 @@ require("dotenv").config();
 import { ErrorMiddleware } from "./middleware/error";
 import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./routes/user.route";
+const serverless=require('serverless-http')
 export const app = express();
 import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
@@ -32,8 +33,8 @@ const limiter = rateLimit({
 })
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
-
-app.get("/", (req: Request, res: Response) => {
+const router=express.Router()
+router.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: "Welcome to the API",
@@ -58,5 +59,6 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 app.use(limiter)
 
 app.use(ErrorMiddleware);
+app.use('/.netlify/functions/api',router);
 
-export default app;
+module.exports.handler=serverless(app)
