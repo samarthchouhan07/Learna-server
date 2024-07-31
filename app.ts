@@ -31,6 +31,8 @@ const limiter = rateLimit({
 	legacyHeaders: false, 
 })
 
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
