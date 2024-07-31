@@ -42,3 +42,4 @@ exports.app.all("*", (req, res, next) => {
 });
 exports.app.use(limiter);
 exports.app.use(error_1.ErrorMiddleware);
+exports.default = exports.app;
