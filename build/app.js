@@ -8,7 +8,6 @@ require("dotenv").config();
 const error_1 = require("./middleware/error");
 const express_1 = __importDefault(require("express"));
 const user_route_1 = __importDefault(require("./routes/user.route"));
-const serverless = require('serverless-http');
 exports.app = (0, express_1.default)();
 const course_route_1 = __importDefault(require("./routes/course.route"));
 const order_route_1 = __importDefault(require("./routes/order.route"));
@@ -30,9 +29,7 @@ const limiter = (0, express_rate_limit_1.rateLimit)({
     standardHeaders: 'draft-7',
     legacyHeaders: false,
 });
-exports.app.get('/favicon.ico', (req, res) => res.status(204).end());
-const router = express_1.default.Router();
-router.get("/", (req, res) => {
+exports.app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
         message: "Welcome to the API",
@@ -51,5 +48,4 @@ exports.app.all("*", (req, res, next) => {
 });
 exports.app.use(limiter);
 exports.app.use(error_1.ErrorMiddleware);
-exports.app.use('/.netlify/functions/api', router);
-module.exports.handler = serverless(exports.app);
+exports.default = exports.app;
