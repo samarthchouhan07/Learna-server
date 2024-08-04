@@ -38,6 +38,10 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end(); 
+});
+
 app.use("/api/v1", userRouter);
 app.use("/api/v1", courseRouter);
 app.use("/api/v1", orderRouter);
