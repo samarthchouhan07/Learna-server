@@ -20,13 +20,13 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.app.use(express_1.default.json({ limit: "50mb" }));
 exports.app.use((0, cookie_parser_1.default)());
 exports.app.use((0, cors_1.default)({
-    origin: ["http://localhost:3000"],
-    credentials: true
+    origin: ["https://learna-client.vercel.app"],
+    credentials: true,
 }));
 const limiter = (0, express_rate_limit_1.rateLimit)({
     windowMs: 15 * 60 * 1000,
     limit: 100,
-    standardHeaders: 'draft-7',
+    standardHeaders: "draft-7",
     legacyHeaders: false,
 });
 exports.app.get("/", (req, res) => {
@@ -35,7 +35,12 @@ exports.app.get("/", (req, res) => {
         message: "Welcome to the API",
     });
 });
-exports.app.use("/api/v1", user_route_1.default, course_route_1.default, order_route_1.default, notification_route_1.default, analytics_route_1.default, layout_route_1.default);
+exports.app.use("/api/v1", user_route_1.default);
+exports.app.use("/api/v1", course_route_1.default);
+exports.app.use("/api/v1", order_route_1.default);
+exports.app.use("/api/v1", notification_route_1.default);
+exports.app.use("/api/v1", analytics_route_1.default);
+exports.app.use("/api/v1", layout_route_1.default);
 exports.app.get("/test", (req, res, next) => {
     res.status(200).json({
         success: true,

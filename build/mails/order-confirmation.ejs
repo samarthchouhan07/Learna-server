@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+        .order-details {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        .order-details h2 {
+            color: #333;
+        }
+        .order-details p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Confirmation By Learna</h1>
+        <p>Course:- <%= name %>,</p>
+        <p>Your order has been successfully placed. Below are the details:</p>
+        <div class="order-details">
+            <h2>Order ID: <%= _id %></h2>
+            <p>Price: <%= price %></p>
+            <p>Date: <%= date %></p>
+        </div>
+        <p>Thank you for choosing Learna.</p>
+    </div>
+</body>
+</html>
