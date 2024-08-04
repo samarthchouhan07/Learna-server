@@ -35,6 +35,9 @@ exports.app.get("/", (req, res) => {
         message: "Welcome to the API",
     });
 });
+exports.app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
 exports.app.use("/api/v1", user_route_1.default);
 exports.app.use("/api/v1", course_route_1.default);
 exports.app.use("/api/v1", order_route_1.default);
