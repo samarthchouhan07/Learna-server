@@ -6,9 +6,9 @@ export const app = express();
 import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
-import analyticsRouter from "./routes/analytics.route"
-import layoutRouter from "./routes/layout.route"
-import {rateLimit} from "express-rate-limit";
+import analyticsRouter from "./routes/analytics.route";
+import layoutRouter from "./routes/layout.route";
+import { rateLimit } from "express-rate-limit";
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -20,18 +20,16 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    credentials:true
+    credentials: true,
   })
 );
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, 
-	limit: 100,
-	standardHeaders: 'draft-7',
-	legacyHeaders: false, 
-})
-
-
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -40,8 +38,12 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-
-app.use("/api/v1", userRouter, courseRouter, orderRouter, notificationRouter,analyticsRouter,layoutRouter);
+app.use("/api/v1", userRouter);
+app.use("/api/v1", courseRouter);
+app.use("/api/v1", orderRouter);
+app.use("/api/v1", notificationRouter);
+app.use("/api/v1", analyticsRouter);
+app.use("/api/v1", layoutRouter);
 
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
@@ -55,7 +57,7 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(err);
 });
 
-app.use(limiter)
+app.use(limiter);
 
 app.use(ErrorMiddleware);
 
