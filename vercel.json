@@ -11,9 +11,5 @@
         "src": "/(.*)",
         "dest": "build/server.js"
       }
-    ],
-    
-    "api/*.js": {
-      "maxDuration": 55
-  }
+    ]
 }
