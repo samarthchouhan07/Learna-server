@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "build/server.js",
-  "type":"commonjs",
-  "engines":{
-    "node":"18.x"
+  "type": "commonjs",
+  "engines": {
+    "node": "18.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
-    "start":"node build/server.js",
-    "build":"tsc"
+    "start": "node build/server.js",
+    "build": "tsc"
   },
   "author": "Samarth Chouhan",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "axios": "^1.7.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.1.0",
+    "connect-timeout": "^1.9.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

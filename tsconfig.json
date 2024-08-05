@@ -108,5 +108,5 @@
   },"include": [
     "**/*.ts",
   ],
-  "files":["@types/custom.d.ts"],
+  "files":["@types/custom.d.ts","@types/connect-timeout.d.ts"],
 }

@@ -12,6 +12,9 @@ import { rateLimit } from "express-rate-limit";
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import timeout from 'connect-timeout';
+
+app.use(timeout('300s'));
 
 app.use(express.json({ limit: "50mb" }));
 
