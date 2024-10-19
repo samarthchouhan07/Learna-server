@@ -54,6 +54,7 @@ export const createOrder = catchAsyncError(
       const courseExistInUser = user.courses.some(
         (course: any) => course._id.toString() === courseId
       );
+      
       if (courseExistInUser) {
         return next(
           new Errorhandler("You have already purchased the course", 400)
