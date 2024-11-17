@@ -20,7 +20,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.app.use(express_1.default.json({ limit: "50mb" }));
 exports.app.use((0, cookie_parser_1.default)());
 exports.app.use((0, cors_1.default)({
-    origin: ["https://learna-client.vercel.app", "https://localhost:3000"],
+    origin: "*",
     credentials: true,
 }));
 const limiter = (0, express_rate_limit_1.rateLimit)({
