@@ -27,17 +27,17 @@ const mongoose_1 = __importStar(require("mongoose"));
 const notificationSchema = new mongoose_1.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
     },
     message: {
         type: String,
-        required: true
+        required: true,
     },
     status: {
         type: String,
         required: true,
-        default: "unread"
-    }
+        default: "unread",
+    },
 }, { timestamps: true });
 const notificationModel = mongoose_1.default.model("Notification", notificationSchema);
 exports.default = notificationModel;
