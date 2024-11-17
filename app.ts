@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["https://learna-client.vercel.app","https://localhost:3000"],
+    origin: ["http://localhost:3000", "https://learna-client.vercel.app"],
     credentials: true,
   })
 );
