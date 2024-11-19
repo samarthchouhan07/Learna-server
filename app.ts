@@ -13,12 +13,6 @@ import { rateLimit } from "express-rate-limit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-app.use(express.json({ limit: "50mb" }));
-
-
-
-app.use(cookieParser());
-
 app.use(
   cors({
     origin:  ['http://localhost:3000',"https://learna-client.vercel.app"],
@@ -26,6 +20,8 @@ app.use(
   })
 );
 
+app.use(express.json({ limit: "50mb" }));
+app.use(cookieParser());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
