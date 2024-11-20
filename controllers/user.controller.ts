@@ -47,21 +47,21 @@ export const registrationUser = catchAsyncError(
         path.join(__dirname, "../mails/activation-mail.ejs"),
         data
       );
-      try {
-        await sendMail({
-          email: user.email,
-          subject: "Activate your account",
-          template: "activation-mail.ejs",
-          data: data,
-        });
+      // try {
+      //   await sendMail({
+      //     email: user.email,
+      //     subject: "Activate your account",
+      //     template: "activation-mail.ejs",
+      //     data: data,
+      //   });
         res.status(200).json({
           success: true,
-          message: `please check your email:${user.email} to activate your account`,
+          // message: `please check your email:${user.email} to activate your account`,
           activationToken: activationToken.token,
         });
-      } catch (error: any) {
-        return next(new Errorhandler(error.message, 400));
-      }
+      // } catch (error: any) {
+      //   return next(new Errorhandler(error.message, 400));
+      // }
     } catch (error: any) {
       return next(new Errorhandler(error.message, 400));
     }

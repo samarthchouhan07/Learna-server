@@ -13,7 +13,6 @@ const redis_1 = require("../utils/redis");
 const mongoose_1 = __importDefault(require("mongoose"));
 const ejs_1 = __importDefault(require("ejs"));
 const path_1 = __importDefault(require("path"));
-const sendMail_1 = require("../utils/sendMail");
 const notification_model_1 = __importDefault(require("../models/notification.model"));
 const axios_1 = __importDefault(require("axios"));
 exports.uploadCourse = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, next) => {
@@ -199,17 +198,16 @@ exports.addAnswer = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, nex
                 title: courseContent.title,
             };
             const html = await ejs_1.default.renderFile(path_1.default.join(__dirname, "../mails/question-reply.ejs"), data);
-            try {
-                await (0, sendMail_1.sendMail)({
-                    email: question.user.email,
-                    subject: "Question Reply",
-                    template: "question-reply.ejs",
-                    data,
-                });
-            }
-            catch (error) {
-                return next(new ErrorHandler_1.default(error.message, 500));
-            }
+            // try {
+            //   await sendMail({
+            //     email: question.user.email,
+            //     subject: "Question Reply",
+            //     template: "question-reply.ejs",
+            //     data,
+            //   });
+            // } catch (error: any) {
+            //   return next(new Errorhandler(error.message, 500));
+            // }
         }
         res.status(200).json({
             success: true,

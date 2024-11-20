@@ -88,17 +88,17 @@ export const createOrder = catchAsyncError(
         maildata
       );
 
-      try {
-        await sendMail({
-          email: user.email,
-          subject: "Order confirmation",
-          template: "order-confirmation.ejs",
-          data: maildata,
-        });
-      } catch (error: any) {
-        console.log(error.message);
-        return next(new Errorhandler(error.message, 400));
-      }
+      // try {
+      //   await sendMail({
+      //     email: user.email,
+      //     subject: "Order confirmation",
+      //     template: "order-confirmation.ejs",
+      //     data: maildata,
+      //   });
+      // } catch (error: any) {
+      //   console.log(error.message);
+      //   return next(new Errorhandler(error.message, 400));
+      // }
 
       user.courses.push(course._id);
       await redis.set(req.user?._id, JSON.stringify(user));

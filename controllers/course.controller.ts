@@ -242,16 +242,16 @@ export const addAnswer = catchAsyncError(
           path.join(__dirname, "../mails/question-reply.ejs"),
           data
         );
-        try {
-          await sendMail({
-            email: question.user.email,
-            subject: "Question Reply",
-            template: "question-reply.ejs",
-            data,
-          });
-        } catch (error: any) {
-          return next(new Errorhandler(error.message, 500));
-        }
+        // try {
+        //   await sendMail({
+        //     email: question.user.email,
+        //     subject: "Question Reply",
+        //     template: "question-reply.ejs",
+        //     data,
+        //   });
+        // } catch (error: any) {
+        //   return next(new Errorhandler(error.message, 500));
+        // }
       }
       res.status(200).json({
         success: true,

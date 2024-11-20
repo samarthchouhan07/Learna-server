@@ -11,7 +11,6 @@ const user_model_1 = __importDefault(require("../models/user.model"));
 const course_model_1 = __importDefault(require("../models/course.model"));
 const path_1 = __importDefault(require("path"));
 const ejs_1 = __importDefault(require("ejs"));
-const sendMail_1 = require("../utils/sendMail");
 const notification_model_1 = __importDefault(require("../models/notification.model"));
 const order_service_1 = require("../services/order.service");
 const redis_1 = require("../utils/redis");
@@ -64,18 +63,17 @@ exports.createOrder = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, n
             }),
         };
         const html = await ejs_1.default.renderFile(path_1.default.join(__dirname, "../mails/order-confirmation.ejs"), maildata);
-        try {
-            await (0, sendMail_1.sendMail)({
-                email: user.email,
-                subject: "Order confirmation",
-                template: "order-confirmation.ejs",
-                data: maildata,
-            });
-        }
-        catch (error) {
-            console.log(error.message);
-            return next(new ErrorHandler_1.default(error.message, 400));
-        }
+        // try {
+        //   await sendMail({
+        //     email: user.email,
+        //     subject: "Order confirmation",
+        //     template: "order-confirmation.ejs",
+        //     data: maildata,
+        //   });
+        // } catch (error: any) {
+        //   console.log(error.message);
+        //   return next(new Errorhandler(error.message, 400));
+        // }
         user.courses.push(course._id);
         await redis_1.redis.set(req.user?._id, JSON.stringify(user));
         await user.save();
