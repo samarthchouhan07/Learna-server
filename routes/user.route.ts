@@ -18,7 +18,10 @@ import { isAuthenticated, authorizeRoles } from "../middleware/auth";
 
 const userRouter = express.Router();
 
-userRouter.post("/registration", registrationUser);
+userRouter.post("/registration", (req, res, next) => {
+  console.log("Registration route hit");
+  registrationUser(req, res, next);
+});
 userRouter.post("/activate-user", activateUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/logout", updateAccessToken,isAuthenticated, logoutUser);

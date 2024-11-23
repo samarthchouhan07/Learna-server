@@ -24,6 +24,8 @@ interface IResgistration {
 
 export const registrationUser = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Registration function called");
+    console.log("Request body:", req.body);
     try {
       const { name, email, password } = req.body;
       const isEmailExist = await userModel.findOne({ email }).maxTimeMS(5000);
@@ -35,34 +37,24 @@ export const registrationUser = catchAsyncError(
         email,
         password,
       };
-      const activationToken = createActivationToken(user);
-      const activationCode = activationToken.activationCode;
-      const data = {
-        user: {
-          name: user.name,
-        },
-        activationCode,
-      };
-      const html = await ejs.renderFile(
-        path.join(__dirname, "../mails/activation-mail.ejs"),
-        data
-      );
-      // try {
-      //   await sendMail({
-      //     email: user.email,
-      //     subject: "Activate your account",
-      //     template: "activation-mail.ejs",
-      //     data: data,
-      //   });
-        res.status(200).json({
-          success: true,
-          // message: `please check your email:${user.email} to activate your account`,
-          activationToken: activationToken.token,
-        });
-      // } catch (error: any) {
-      //   return next(new Errorhandler(error.message, 400));
-      // }
+      
+      const newUser = await userModel.create(user);
+      await redis.set(newUser._id.toString(), JSON.stringify(newUser));
+
+      const accessToken = jwt.sign({ id: newUser._id }, process.env.ACCESS_TOKEN as string, { expiresIn: "5m" });
+      const refreshToken = jwt.sign({ id: newUser._id }, process.env.REFRESH_TOKEN as string, { expiresIn: "3d" });
+
+      res.cookie("access_token", accessToken, accessTokenOptions);
+      res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+
+      res.status(200).json({
+        success: true,
+        message: "User created and logged in successfully",
+        accessToken,
+        refreshToken,
+      });
     } catch (error: any) {
+      console.error("Error in registration:", error);
       return next(new Errorhandler(error.message, 400));
     }
   }
@@ -121,7 +113,7 @@ export const activateUser = catchAsyncError(
       });
       res.status(200).json({
         success: true,
-      });
+      }); 
     } catch (error: any) {
       return next(new Errorhandler(error.message, 400));
     }

@@ -9,8 +9,6 @@ const ErrorHandler_1 = __importDefault(require("../utils/ErrorHandler"));
 const catchAsyncErrors_1 = require("../middleware/catchAsyncErrors");
 require("dotenv").config();
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const ejs_1 = __importDefault(require("ejs"));
-const path_1 = __importDefault(require("path"));
 const redis_1 = require("../utils/redis");
 const jwt_1 = require("../utils/jwt");
 const jwt_2 = require("../utils/jwt");
@@ -19,6 +17,8 @@ const cloudinary_1 = __importDefault(require("cloudinary"));
 const user_service_2 = require("../services/user.service");
 const user_service_3 = require("../services/user.service");
 exports.registrationUser = (0, catchAsyncErrors_1.catchAsyncError)(async (req, res, next) => {
+    console.log("Registration function called");
+    console.log("Request body:", req.body);
     try {
         const { name, email, password } = req.body;
         const isEmailExist = await user_model_1.default.findOne({ email }).maxTimeMS(5000);
@@ -30,32 +30,21 @@ exports.registrationUser = (0, catchAsyncErrors_1.catchAsyncError)(async (req, r
             email,
             password,
         };
-        const activationToken = (0, exports.createActivationToken)(user);
-        const activationCode = activationToken.activationCode;
-        const data = {
-            user: {
-                name: user.name,
-            },
-            activationCode,
-        };
-        const html = await ejs_1.default.renderFile(path_1.default.join(__dirname, "../mails/activation-mail.ejs"), data);
-        // try {
-        //   await sendMail({
-        //     email: user.email,
-        //     subject: "Activate your account",
-        //     template: "activation-mail.ejs",
-        //     data: data,
-        //   });
+        const newUser = await user_model_1.default.create(user);
+        await redis_1.redis.set(newUser._id.toString(), JSON.stringify(newUser));
+        const accessToken = jsonwebtoken_1.default.sign({ id: newUser._id }, process.env.ACCESS_TOKEN, { expiresIn: "5m" });
+        const refreshToken = jsonwebtoken_1.default.sign({ id: newUser._id }, process.env.REFRESH_TOKEN, { expiresIn: "3d" });
+        res.cookie("access_token", accessToken, jwt_2.accessTokenOptions);
+        res.cookie("refresh_token", refreshToken, jwt_1.refreshTokenOptions);
         res.status(200).json({
             success: true,
-            // message: `please check your email:${user.email} to activate your account`,
-            activationToken: activationToken.token,
+            message: "User created and logged in successfully",
+            accessToken,
+            refreshToken,
         });
-        // } catch (error: any) {
-        //   return next(new Errorhandler(error.message, 400));
-        // }
     }
     catch (error) {
+        console.error("Error in registration:", error);
         return next(new ErrorHandler_1.default(error.message, 400));
     }
 });
