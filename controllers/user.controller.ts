@@ -20,6 +20,7 @@ interface IResgistration {
   email: string;
   password: string;
   avatar?: string;
+  isActive: true, 
 }
 
 export const registrationUser = catchAsyncError(
@@ -36,6 +37,7 @@ export const registrationUser = catchAsyncError(
         name,
         email,
         password,
+        isActive: true, 
       };
       
       const newUser = await userModel.create(user);
@@ -44,7 +46,11 @@ export const registrationUser = catchAsyncError(
       const accessToken = jwt.sign({ id: newUser._id }, process.env.ACCESS_TOKEN as string, { expiresIn: "5m" });
       const refreshToken = jwt.sign({ id: newUser._id }, process.env.REFRESH_TOKEN as string, { expiresIn: "3d" });
 
-      res.cookie("access_token", accessToken, accessTokenOptions);
+      res.cookie("access_token", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+      });
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
       res.status(200).json({
@@ -174,6 +180,7 @@ export const logoutUser = catchAsyncError(
 export const updateAccessToken = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("updateAccessToken got hit")
       const refresh_token = req.cookies.refresh_token as string;
       const decoded = jwt.verify(
         refresh_token,
@@ -184,7 +191,7 @@ export const updateAccessToken = catchAsyncError(
       }
       const session = await redis.get(decoded.id as string);
       if (!session) {
-        return next(new Errorhandler("Please login to access this resources", 400));
+        return next(new Errorhandler("Session is missing in the updateAccessToken", 400));
       }
       const user = JSON.parse(session);
 
@@ -218,7 +225,15 @@ export const getUserInfo = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?._id;
-      getUserById(userId, res);
+      console.log("getuserInfo got hit")
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return next(new Errorhandler("User not found", 404));
+      }
+      res.status(200).json({
+        success: true,
+        user,
+      });
     } catch (error: any) {
       return next(new Errorhandler(error.message, 400));
     }
@@ -392,13 +407,13 @@ export const deleteUser = catchAsyncError(
       const { id } = req.params;
       const user = await userModel.findById(id);
       if (!user) {
-        return next(new Errorhandler("user not found", 400));
+        return next(new Errorhandler("User not found", 400));
       }
-      await user.deleteOne({ id });
+      await user.deleteOne();
       await redis.del(id);
       res.status(200).json({
         success: true,
-        message: "user deleted successfully",
+        message: "User deleted successfully",
       });
     } catch (error: any) {
       return next(new Errorhandler(error.message, 400));

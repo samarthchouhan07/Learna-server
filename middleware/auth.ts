@@ -7,36 +7,30 @@ import { redis } from "../utils/redis";
 
 export const isAuthenticated = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("this are cookies", req.cookies)
-    const access_token = req.cookies.access_token as string
-    console.log("Access token:", access_token);  
+    console.log("isAuthenticated middleware hit");
+    const access_token = req.cookies.access_token;
 
     if (!access_token) {
-      return next(
-        new Errorhandler("Please log in to access this resource", 400)
-      );
+      console.log("Access token is missing");
+      return next(new Errorhandler("Access token is missing", 400));
     }
 
-    const decoded = jwt.verify(
-      access_token,
-      process.env.ACCESS_TOKEN as string
-    ) as JwtPayload;
+    try {
+      const decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN!) as JwtPayload;
+      const user = await redis.get(decoded.id);
 
-    if (!decoded) {
-      return next(new Errorhandler("Access token is not valid", 400));
+      if (!user) {
+        console.log("User not found in Redis");
+        return next(new Errorhandler("User not found", 400));
+      }
+
+      req.user = JSON.parse(user);
+      console.log("Authentication successful", req.user);
+      next();
+    } catch (error) {
+      console.log("Error verifying token:", error);
+      return next(new Errorhandler("Invalid access token", 400));
     }
-
-    const user = await redis.get(decoded.id);
-    console.log("User data from Redis:", user);
-
-    if (!user) {
-      return next(new Errorhandler("User not found", 400));
-    }
-    
-    req.user = JSON.parse(user);
-    console.log("authentication successful")
-    next();
-
   }
 );
 

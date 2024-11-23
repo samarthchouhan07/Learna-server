@@ -7,7 +7,10 @@ const express_1 = __importDefault(require("express"));
 const user_controller_1 = require("../controllers/user.controller");
 const auth_1 = require("../middleware/auth");
 const userRouter = express_1.default.Router();
-userRouter.post("/registration", user_controller_1.registrationUser);
+userRouter.post("/registration", (req, res, next) => {
+    console.log("Registration route hit");
+    (0, user_controller_1.registrationUser)(req, res, next);
+});
 userRouter.post("/activate-user", user_controller_1.activateUser);
 userRouter.post("/login", user_controller_1.loginUser);
 userRouter.get("/logout", user_controller_1.updateAccessToken, auth_1.isAuthenticated, user_controller_1.logoutUser);
